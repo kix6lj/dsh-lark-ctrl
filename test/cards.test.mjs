@@ -133,7 +133,10 @@ test('notification cards carry the session code and stable structure', () => {
     sessionId: 'session-1',
   })
   assert.equal(start.schema, '2.0')
-  assert.match(start.header.title.content, /k3f9zq/)
+  // The header carries what a human recognises (the title); the session code is
+  // demoted to the footer meta line but stays inside the card for quoting.
+  assert.match(start.header.title.content, /清理/)
+  assert.match(JSON.stringify(start), /k3f9zq/)
 
   const end = buildEndCard({
     code: 'k3f9zq',
@@ -149,6 +152,8 @@ test('notification cards carry the session code and stable structure', () => {
     sessionId: 'session-1',
   })
   assert.equal(end.header.template, 'green')
+  assert.match(end.header.title.content, /清理/)
+  assert.match(JSON.stringify(end), /k3f9zq/)
   assert.ok(end.body.elements.some((element) => element.tag === 'form'))
 
   const approval = buildApprovalCard({
@@ -261,7 +266,7 @@ test('session detail card has prompt form, hash block and actions', () => {
   const form = card.body.elements.find((element) => element.tag === 'form')
   assert.equal(form.name, 'session_form')
   assert.ok(form.elements.some((element) => element.name === 'prompt'))
-  assert.ok(form.elements.some((element) => element.name === 'session_btw'))
+  assert.ok(!form.elements.some((element) => element.name === 'session_btw'))
   const ops = []
   const walk = (value) => {
     if (Array.isArray(value)) { for (const item of value) walk(item); return }
@@ -271,7 +276,7 @@ test('session detail card has prompt form, hash block and actions', () => {
     }
   }
   walk(card)
-  assert.ok(ops.includes('session_copy'))
+  assert.ok(ops.includes('sessions'))
   assert.ok(ops.includes('status'))
 })
 
@@ -339,7 +344,7 @@ test('session detail form has separate send and btw submit buttons', () => {
   })
   const form = card.body.elements.find((element) => element.tag === 'form')
   const buttons = form.elements.filter((element) => element.tag === 'button')
-  assert.deepEqual(buttons.map((item) => item.name), ['session_send', 'session_btw'])
+  assert.deepEqual(buttons.map((item) => item.name), ['session_send'])
   assert.ok(buttons.every((item) => item.form_action_type === 'submit'))
 })
 
@@ -359,7 +364,7 @@ test('end card strips images and explains why the summary is shorter', () => {
   const serialized = JSON.stringify(card)
   assert.doesNotMatch(serialized, /!\[/)
   assert.match(serialized, /图片已省略/)
-  assert.match(serialized, /图片已从飞书卡片摘要中省略/)
+  assert.match(serialized, /（图片已省略）/)
 })
 
 test('help topic card contains usage, examples, notes and related actions', () => {

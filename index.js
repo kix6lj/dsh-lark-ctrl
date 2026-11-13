@@ -29,7 +29,7 @@ export const name = 'dsh-lark-ctrl'
  * at call time: the first enables dsh-btw delegation, the second lets the
  * fallback modes notice a live Web client.
  */
-export const inject = ['sessions', 'agents', 'sessionController', 'sessionProjections', 'userQuestions']
+export const inject = ['sessions', 'agents', 'sessionController', 'sessionProjections', 'userQuestions', 'attachments']
 
 const STARTUP_RETRY_MS = 60000
 
