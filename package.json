@@ -1,6 +1,6 @@
 {
   "name": "dsh-lark-ctrl",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Lark/Feishu bridge for DeepSeek Harness: run summaries, interactive question/approval cards, workspace/session creation, and hash-addressed prompts from your phone.",
   "type": "module",
   "license": "MIT",

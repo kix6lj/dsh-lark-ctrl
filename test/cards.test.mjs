@@ -147,6 +147,7 @@ test('notification cards carry the session code and stable structure', () => {
     failed: false,
     durationText: '1m02s',
     toolCalls: 4,
+    toolWarnings: 2,
     toolNames: ['bash', 'read'],
     usage: { inputTokens: 12000, outputTokens: 800 },
     sessionId: 'session-1',
@@ -154,6 +155,9 @@ test('notification cards carry the session code and stable structure', () => {
   assert.equal(end.header.template, 'green')
   assert.match(end.header.title.content, /清理/)
   assert.match(JSON.stringify(end), /k3f9zq/)
+  // Recovered tool failures are a grey notice, never the card headline.
+  assert.match(JSON.stringify(end), /2 次工具调用失败后已恢复/)
+  assert.doesNotMatch(end.header.title.content, /工具报错/)
   assert.ok(end.body.elements.some((element) => element.tag === 'form'))
 
   const approval = buildApprovalCard({
